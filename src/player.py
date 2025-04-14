@@ -14,32 +14,42 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0  # гравитация
         self.jumping = False  # статус прыжка
 
-    def update(self, platforms):
+    def update(self, platforms, traps):
         # Гравитация
-        self.velocity_y += 0.5
+        self.velocity_y += 0.3
 
         # Управление
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_ESCAPE]:
+            exit() # Выход по ESC
+        elif keys[pygame.K_r]: # Рестарт
+            self.rect.x = 100
+            self.rect.y = 300
+        elif keys[pygame.K_a]:
             self.velocity_x = -5
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_d]:
             self.velocity_x = 5
         else:
             self.velocity_x = 0  # Останавливаемся, если клавиши не нажаты
 
         # Прыжок (остаётся без изменений)
         if keys[pygame.K_SPACE] and not self.jumping:
-            self.velocity_y = -12
+            self.velocity_y = -10
             self.jumping = True
 
         # Применяем коллизии
-        self.check_collision(platforms)  # Передаём группу платформ
+        self.check_collision(platforms, traps)
 
         # Обновляем позицию
         self.rect.x += int(self.velocity_x)
         self.rect.y += int(self.velocity_y)
 
-    def check_collision(self, platforms):
+    def check_collision(self, platforms, traps):
+        for trap in traps:
+            if pygame.sprite.collide_mask(self, trap):
+                self.rect.x = 100
+                self.rect.y = 300
+
         # Горизонтальные коллизии
         self.rect.x += self.velocity_x
         hits = pygame.sprite.spritecollide(self, platforms, False)
@@ -52,7 +62,7 @@ class Player(pygame.sprite.Sprite):
                 self.velocity_x = 0  # Полная остановка
         else:
             self.rect.x -= self.velocity_x  # Отменяем только если нет коллизии
-
+            
         # Вертикальные коллизии
         self.rect.y += self.velocity_y
         hits = pygame.sprite.spritecollide(self, platforms, False)
@@ -64,4 +74,6 @@ class Player(pygame.sprite.Sprite):
             elif self.velocity_y < 0:  # Прыжок вверх
                 self.rect.top = hits[0].rect.bottom
                 self.velocity_y = 0
+        else:
+            self.jumping = True
         self.rect.y -= self.velocity_y  # Всегда возвращаем для точного позиционирования
