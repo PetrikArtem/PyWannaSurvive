@@ -20,9 +20,14 @@ class Player(pygame.sprite.Sprite):
 
         # Управление
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_ESCAPE]:
+            exit() # Выход по ESC
+        elif keys[pygame.K_r]: # Рестарт
+            self.rect.x = 100
+            self.rect.y = 300
+        elif keys[pygame.K_a]:
             self.velocity_x = -5
-        elif keys[pygame.K_RIGHT]:
+        elif keys[pygame.K_d]:
             self.velocity_x = 5
         else:
             self.velocity_x = 0  # Останавливаемся, если клавиши не нажаты
@@ -64,4 +69,6 @@ class Player(pygame.sprite.Sprite):
             elif self.velocity_y < 0:  # Прыжок вверх
                 self.rect.top = hits[0].rect.bottom
                 self.velocity_y = 0
+        else:
+            self.jumping = True
         self.rect.y -= self.velocity_y  # Всегда возвращаем для точного позиционирования

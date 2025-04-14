@@ -19,12 +19,16 @@ player = Player(100, 300)
 all_sprites.add(player)
 
 # Платформы
-ground = Platform(0, SCREEN_HEIGHT - 40, SCREEN_WIDTH, 40)
+bottom_border = Platform(0, SCREEN_HEIGHT - 40, SCREEN_WIDTH, 40)
+left_border = Platform(0,0, 5, 1080)
+right_border = Platform(SCREEN_WIDTH - 5, 0, 5, SCREEN_HEIGHT)
+top_border = Platform(0, 0, SCREEN_WIDTH, 5)
 platform1 = Platform(100, 400, 200, 20)
 platform2 = Platform(400, 300, 150, 2000)
 
-platforms.add(ground, platform1, platform2) # добавляем в группу для коллизий
-all_sprites.add(ground, platform1, platform2) # и для отрисовки
+
+platforms.add(bottom_border, left_border, right_border, top_border, platform1, platform2) # добавляем в группу для коллизий
+all_sprites.add(bottom_border, platform1, platform2) # и для отрисовки
 
 # Основной игровой цикл
 running = True
